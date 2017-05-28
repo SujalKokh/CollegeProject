@@ -1,0 +1,68 @@
+<html>
+<head>
+</head>
+<body>
+<?php
+$con = mysql_connect("localhost","root","");
+if(!$con){
+die("Can not connect:" . mysql_error());
+}
+
+mysql_select_db("rms",$con);
+
+// for add update and delete queries
+
+if(isset($_POST['update'])){
+$UpdateQuery ="UPDATE students Set id='$_POST[id]', Name='$_POST[name]',Token='$_POST[password]' WHERE id='$_POST[hidden]'";
+mysql_query($UpdateQuery,$con);
+};
+
+if(isset($_POST['delete'])){
+$DeleteQuery="DELETE FROM students WHERE id='$_POST[hidden]'";
+mysql_query($DeleteQuery,$con);
+};
+
+if(isset($_POST['add'])){
+$AddQuery="INSERT INTO students (id, name, password) VALUES ('$_POST[uid]','$_POST[uname]','$_POST[upassword]')";
+mysql_query($AddQuery,$con);
+};
+
+//end query connection
+
+
+
+$sql ="SELECT * FROM students";
+$myData = mysql_query($sql,$con);
+echo"<table border=1>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>password</th>
+</tr>";
+while($record = mysql_fetch_array($myData)){
+echo "<form action=account.php method=post>";
+echo"<tr>";
+echo"<td>" . "<input type = text name=id value=" . $record['id'] . " </td>";
+echo"<td>" . "<input type = text name=name value=" . $record['name'] . " </td>";
+echo"<td>" . "<input type = text name=password value=" . $record['password'] . " </td>";
+echo"<td>" . "<input type = hidden name=hidden value=" . $record['id'] . " </td>";
+echo"<td>" . "<input type = submit name=update value=update" . " </td>";
+echo"<td>" . "<input type = submit name=delete value=delete" . " </td>";
+echo"</tr>";
+echo"</form>";
+}
+echo "<form action=account.php method=post>";
+echo "<tr>";
+echo "<td><input type=text name=uid></td>";
+echo "<td><input type=text name=uname></td>";
+echo "<td><input type=text name=upassword></td>";
+echo "<td>" . "<input type = submit name=add value=add " . "</td>";
+echo"</tr>";
+echo "</form>";
+echo "</table>";
+mysql_close($con);
+
+?>
+</body>
+</html>
+
